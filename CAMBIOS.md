@@ -1,5 +1,9 @@
 # Historial de versiones del EDH Tracker
 
+## v1.2 · 24/11/2026
+- pestaña Jugadores ordenada por cantidad de partidas jugadas
+- en Mazos, el detalle de cada mazo se abre dentro de la lista, justo bajo el mazo, sin volver arriba
+
 ## v1.1 · 24/11/2026
 - agregar partida: la ventana queda fija arriba y crece hacia abajo, los nombres ya no se mueven al tocarlos
 - elegir mazo escribiendo: muestra los últimos 4 mazos del jugador y filtra solo los que empiezan con las letras que escribes

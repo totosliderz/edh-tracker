@@ -93,6 +93,8 @@ footer.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;min-height:40px;disp
 .seatrow input.ok{border-color:var(--good)}
 .foot-r{display:flex;align-items:center;gap:4px}
 .theme{min-height:40px;min-width:40px;border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer;border-radius:8px}.theme:hover{color:var(--acc)}.theme:focus-visible{outline:3px solid var(--acc)}
+.detrow>td{padding:0 0 14px;border-bottom:1px solid var(--line)}.detrow .card{margin:0!important;background:var(--panel2)}
+tr.click.sel td{background:var(--panel2);font-weight:600}
 .pnames{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 label.chk{display:flex;gap:10px;align-items:center;min-height:44px}label.chk input{width:22px;min-height:22px}
 .status{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--panel2);color:var(--mut)}
@@ -297,7 +299,7 @@ V.ranking=()=>{const S=stats();const ps=[...S.players].sort((a,b)=>pSort==='name
  ${ps.map(p=>`<tr class="click" data-p="${esc(p.name)}"><td class="n">${p.rank}</td><td><b>${esc(p.name)}</b></td><td class="n">${Math.round(p.elo)} <span class="div ${division(p.elo)}">${division(p.elo)}</span></td><td class="n">${p.P}</td><td class="n">${p.W}</td><td class="n">${pct(p.wr)}</td>
  <td class="hide-s"><svg width="100%" height="18" viewBox="0 0 100 18" preserveAspectRatio="none" data-tip="${esc(p.name)}: entre ${pct(p.lo)} y ${pct(p.hi)}"><line x1="31.25" x2="31.25" y1="0" y2="18" stroke="var(--mut)" stroke-dasharray="2 2" vector-effect="non-scaling-stroke"/><rect x="${p.lo*125}" width="${(p.hi-p.lo)*125}" y="6" height="6" rx="3" fill="var(--acc)" opacity=".35"/><rect x="${p.wr*125-0.8}" width="1.6" y="2" height="14" fill="var(--acc)"/></svg></td></tr>`).join('')}
  </tbody></table><p class="note">Escala de la barra: 0% a 80%. Toca un jugador para ver su perfil.</p></div>`};
-V.jugadores=()=>{const S=stats();const names=[...db.players].sort((a,b)=>a.localeCompare(b,'es'));
+V.jugadores=()=>{const S=stats();const gp=Object.fromEntries(S.players.map(p=>[p.name,p.P]));const names=[...db.players].sort((a,b)=>(gp[b]||0)-(gp[a]||0)||a.localeCompare(b,'es'));
  return`<h2>Jugadores</h2><div class="pnames">${names.map(n=>`<button class="chip ${n===selP?'on':''}" data-pp="${esc(n)}">${esc(n)}</button>`).join('')}</div>
  <section id="pdet">${selP?(playerDetail(S,selP)||`<p class="sub">${esc(selP)} todavía no tiene partidas.</p>`):'<p class="sub">Elige un jugador para ver su perfil: mazos, colores y enfrentamientos.</p>'}</section>`};
 function playerDetail(S,name){const p=S.players.find(x=>x.name===name);if(!p)return'';
@@ -321,9 +323,8 @@ V.mazos=()=>{const S=stats(),q=dQ.toLowerCase();let ds=S.decks.filter(d=>d.P>=dM
  return`<h2>Mazos</h2><p class="sub">ELO de mazo como en tu planilla: suavizado con 20 partidas al 25%. Divisiones: Challenger ≥1650, Diamond ≥1500, Platinum ≥1350, Gold ≥1200, Silver ≥1120.</p>
  <div class="row"><input id="dQ" placeholder="Buscar commander" value="${esc(dQ)}"><select id="dOwner"><option value="">Todos los dueños</option>${owners.map(o=>`<option ${o===dOwner?'selected':''}>${esc(o)}</option>`).join('')}</select>
  <select id="dMin">${[1,5,10,20].map(n=>`<option value="${n}" ${n===dMin?'selected':''}>Mín. ${n} partidas</option>`).join('')}<option value="0" ${dMin===0?'selected':''}>Incluir sin jugar</option></select><button class="btn sm" id="newDeck">+ Mazo</button><span class="note">${ds.length} mazos</span></div>
- ${selD?deckDetail(S,selD):''}
  <div class="card scroll"><table><thead><tr>${th('rank','#')}${th('name','Commander','')}<th>Dueño</th><th class="hide-s">Colores</th>${th('elo','ELO')}${th('P','P')}${th('W','W')}${th('wr','WR')}</tr></thead><tbody>
- ${ds.map(d=>`<tr class="click" data-d="${esc(d.id)}"><td class="n">${d.rank??'–'}</td><td>${deckCell(d)}</td><td>${esc(d.owner)}</td><td class="hide-s">${pips(d.colors)}</td><td class="n">${d.elo?Math.round(d.elo):'–'} ${d.elo?`<span class="div ${d.div}">${d.div}</span>`:''}</td><td class="n">${d.P}</td><td class="n">${d.W}</td><td class="n">${pct(d.wr)}</td></tr>`).join('')}
+ ${ds.map(d=>`<tr class="click${d.id===selD?' sel':''}" data-d="${esc(d.id)}" id="row-${esc(d.id.replace(/[^a-z0-9-]/g,'_'))}"><td class="n">${d.rank??'–'}</td><td>${deckCell(d)}</td><td>${esc(d.owner)}</td><td class="hide-s">${pips(d.colors)}</td><td class="n">${d.elo?Math.round(d.elo):'–'} ${d.elo?`<span class="div ${d.div}">${d.div}</span>`:''}</td><td class="n">${d.P}</td><td class="n">${d.W}</td><td class="n">${pct(d.wr)}</td></tr>${d.id===selD?`<tr class="detrow"><td colspan="8">${deckDetail(S,d.id)}</td></tr>`:''}`).join('')}
  </tbody></table></div>`};
 function deckDetail(S,id){const d=S.decks.find(x=>x.id===id);if(!d)return'';
  return`<div class="card" style="margin-bottom:14px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))">
@@ -374,7 +375,8 @@ function render(){const h=(location.hash||'#resumen').slice(1),v=V[h]?h:'resumen
  observers.splice(0).forEach(o=>o.disconnect());
  document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));
  document.getElementById('view').innerHTML=V[v]();V[v].after?.()}
-addEventListener('hashchange',()=>{selP=pendingP;pendingP=null;selD=null;render()});
+let pendingD=null;
+addEventListener('hashchange',()=>{selP=pendingP;pendingP=null;selD=pendingD;pendingD=null;render();if(selD)document.getElementById('row-'+selD.replace(/[^a-z0-9-]/g,'_'))?.scrollIntoView({block:'center'})});
 
 const view=document.getElementById('view');
 view.addEventListener('click',async e=>{const t=e.target;
@@ -383,7 +385,9 @@ view.addEventListener('click',async e=>{const t=e.target;
  const pr=t.closest('[data-p]');if(pr){pendingP=pr.dataset.p;location.hash='#jugadores';return}
  const pp=t.closest('[data-pp]');if(pp){selP=pp.dataset.pp;render();return}
  const ed=t.closest('[data-editdeck]');if(ed){openDeck(ed.dataset.editdeck);return}
- const dr=t.closest('[data-d]');if(dr){selD=dr.dataset.d;if(location.hash!=='#mazos'){location.hash='#mazos';setTimeout(()=>{selD=dr.dataset.d;render()},0)}else{render();scrollTo({top:0,behavior:'smooth'})}return}
+ const dr=t.closest('[data-d]');if(dr){const id=dr.dataset.d;
+  if(location.hash!=='#mazos'){dMin=0;dQ='';dOwner='';pendingD=id;location.hash='#mazos'}
+  else{selD=selD===id?null:id;render()}return}
  if(t.id==='closeD'){selD=null;render();return}
  if(t.id==='newDeck'){openDeck(null);return}
  const em=t.closest('[data-edit]');if(em){openDlg(+em.dataset.edit);return}
