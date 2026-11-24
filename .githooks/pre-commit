@@ -1,0 +1,31 @@
+#!/bin/sh
+# EDH Tracker · sube la versión sola en cada commit.
+#   Cambio pequeño (lo normal): sube el decimal  1.0 -> 1.1 -> ... -> 1.9 -> 1.10
+#   Cambio grande: antes del commit escribe tú la versión nueva en version.js (ej. '2.0');
+#   si version.js viene modificado en el commit, se respeta tal cual.
+# Además anota la versión con sus cambios (.cambios) en CAMBIOS.md, el historial de versiones.
+cd "$(git rev-parse --show-toplevel)" || exit 0
+f=version.js
+[ -f "$f" ] || exit 0
+v=$(sed -n "s/.*EDH_VERSION *= *'\([0-9][0-9]*\.[0-9][0-9]*\)'.*/\1/p" "$f" | head -n 1)
+[ -n "$v" ] || { echo "pre-commit: no encontré la versión en $f; sigo sin cambiarla."; exit 0; }
+if ! git diff --cached --name-only | grep -qx "$f"; then
+  mayor=${v%%.*}; menor=${v#*.}
+  v="$mayor.$((menor + 1))"
+  sed -i "s/EDH_VERSION *= *'[0-9.]*'/EDH_VERSION = '$v'/" "$f"
+fi
+items=""
+[ -f .cambios ] && items=$(sed 's/\r$//; s/^[[:space:]]*[-•*][[:space:]]*//; /^[[:space:]]*$/d' .cambios)
+if [ -n "$items" ]; then
+  [ -f CAMBIOS.md ] || printf '# Historial de versiones del EDH Tracker\n' > CAMBIOS.md
+  {
+    sed -n '1p' CAMBIOS.md
+    printf '\n## v%s · %s\n' "$v" "$(date +%d/%m/%Y)"
+    printf '%s\n' "$items" | sed 's/^/- /'
+    sed -n '2,$p' CAMBIOS.md
+  } > CAMBIOS.md.tmp && mv CAMBIOS.md.tmp CAMBIOS.md
+  git add CAMBIOS.md
+fi
+git add "$f"
+echo "EDH Tracker v$v"
+exit 0

@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Los scripts de commit deben quedar con saltos de línea de Linux para funcionar en Windows
+.githooks/* text eol=lf

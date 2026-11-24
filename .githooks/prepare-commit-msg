@@ -1,0 +1,37 @@
+#!/bin/sh
+# EDH Tracker · arma el mensaje del commit solo.
+#   En GitHub Desktop escribe en "Summary" solo un punto (.) y deja la descripción vacía.
+#   El resumen sale de .cambios: Claude anota ahí, en palabras simples, qué funcionalidad cambió
+#   (una línea por cambio). Si .cambios está vacío, dice qué partes se tocaron.
+#   Si escribes tu propio resumen, se respeta y solo se le agrega la versión adelante.
+msg="$1"; origen="$2"
+case "$origen" in merge|squash|commit) exit 0;; esac
+cd "$(git rev-parse --show-toplevel)" || exit 0
+v=$(sed -n "s/.*EDH_VERSION *= *'\([0-9.]*\)'.*/\1/p" version.js 2>/dev/null | head -n 1)
+[ -n "$v" ] || exit 0
+resumen=$(grep -v '^#' "$msg" | sed 's/\r$//' | sed -n '1p' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+desc=$(grep -v '^#' "$msg" | sed 's/\r$//' | sed '1d' | sed '/./,$!d')
+archivos=$(git diff --cached --name-only)
+schema=0; echo "$archivos" | grep -qx 'schema.sql' && schema=1
+items=""
+[ -f .cambios ] && items=$(sed 's/\r$//; s/^[[:space:]]*[-•*][[:space:]]*//; /^[[:space:]]*$/d' .cambios)
+if [ -z "$resumen" ] || [ "$resumen" = "." ]; then
+  if [ -n "$items" ]; then
+    primero=$(printf '%s\n' "$items" | sed -n '1p'); n=$(printf '%s\n' "$items" | wc -l | tr -d ' ')
+    resumen="Cambios: $primero"; [ "$n" -gt 1 ] && resumen="$resumen (+$((n-1)) más)"
+  else
+    partes=$(echo "$archivos" | sed -n \
+      -e 's#^index\.html$#Página#p' -e 's#^schema\.sql$#Base de datos#p' -e 's#^seed\.sql$#Datos iniciales#p' \
+      -e 's#^config\.js$#Configuración#p' -e 's#^\.githooks/.*#Automatizaciones#p' -e 's#^README\.md$#Instrucciones#p' \
+      | sort -u | paste -sd, - | sed 's/,/, /g')
+    resumen="Cambios en ${partes:-varios archivos}"
+  fi
+fi
+{
+  printf 'v%s · %s\n' "$v" "$resumen"
+  if [ -n "$desc" ]; then printf '\n%s\n' "$desc"; fi
+  if [ -n "$items" ]; then printf '\nCambios:\n'; printf '%s\n' "$items" | sed 's/^/- /'; fi
+  if [ $schema = 1 ]; then printf '\n⚠️ Cambió schema.sql: córrelo en Supabase.\n'; fi
+} > "$msg.tmp"
+mv "$msg.tmp" "$msg"
+exit 0
