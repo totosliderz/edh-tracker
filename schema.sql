@@ -24,6 +24,7 @@ create table matches (
   id bigserial primary key,
   played_on date not null,
   turns int,
+  duration_min int,                    -- duración de la partida en minutos (opcional)
   winner text references players(name) on update cascade,
   seats jsonb not null,                -- [{"p":"Toto","deck":"toto/kuja-genome-sorcerer"}, ...]
   deleted_at timestamptz,              -- papelera

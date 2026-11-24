@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EDH Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/Beleren2016-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* VOICE: mesa de amigos, competitivo y divertido; números claros, cero relleno
    IDEA: un playmat de Commander: tapete oscuro, pips de maná, ranking como escalera de ligas
    PICTURE: tablero de liga (ranking con intervalo de confianza) + sesiones como barras de vida
-   COLOUR and TYPE: tapete verde-petróleo profundo, hueso, acento cobre; pips WUBRG; Cinzel títulos + Inter
+   COLOUR and TYPE: tapete verde-petróleo profundo, hueso, acento cobre; pips WUBRG; Beleren títulos + Inter
    LAYOUT: barra superior con pestañas, botón grande "+ Partida", contenido en una columna ancha de 1240px */
 :root{color-scheme:light dark;
 --bg:light-dark(#eef1ec,#0f1a19);--panel:light-dark(#ffffff,#162523);--panel2:light-dark(#e3e9e3,#1d302d);
@@ -18,14 +19,19 @@
 --acc:light-dark(#a8501f,#e48a52);--acc-ink:light-dark(#fff,#1a0f08);--good:light-dark(#1f7a4a,#5fcf8f);
 --mW:#efe6c1;--mU:#2a7fd0;--mB:#8a7a9c;--mR:#d4402f;--mG:#2f9a5a;--mC:#a9a9a9}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+@font-face{font-family:Beleren;src:url(fonts/Beleren2016-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
-h1,h2,h3{font-family:Cinzel,Georgia,serif;line-height:1.05;text-wrap:balance;margin:0}
+h1,h2,h3{font-family:Beleren,Georgia,serif;font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
 h1{font-size:clamp(26px,4vw,38px)}h2{font-size:clamp(22px,3vw,30px);margin-bottom:6px}h3{font-size:18px}
 a{color:var(--acc)}
 header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .top{max-width:1240px;margin:auto;display:flex;align-items:center;gap:16px;padding:12px max(4vw,14px) 0;flex-wrap:wrap}
-.top h1{flex:1}
+.top h1{flex:1;display:flex;align-items:center;gap:12px;font-size:clamp(28px,4.5vw,40px);letter-spacing:.01em}
+.top h1 .logo{display:inline-flex;gap:3px;padding:6px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line)}
+.top h1 .logo i{width:11px;height:11px;border-radius:50%;border:1px solid #0004}
+.top h1 small{font:500 13px Inter,sans-serif;color:var(--mut);letter-spacing:0;align-self:flex-end;padding-bottom:6px}
+@media(max-width:600px){.top h1 small{display:none}}
 .tabs{max-width:1240px;margin:auto;display:flex;gap:4px;overflow-x:auto;padding:8px max(4vw,14px) 0}
 .tabs a{flex:none;padding:10px 14px;border-radius:10px 10px 0 0;text-decoration:none;color:var(--mut);font-weight:600;font-size:15px}
 .tabs a.on{color:var(--ink);background:var(--panel);box-shadow:inset 0 -3px 0 var(--acc)}
@@ -35,9 +41,9 @@ main{max-width:1240px;margin:auto;padding:24px max(4vw,14px) 150px}
 .btn.pri{background:var(--acc);color:var(--acc-ink);border-color:transparent}
 .btn.sm{min-height:36px;padding:0 12px;font-size:14px}
 .fab{position:fixed;right:max(4vw,16px);bottom:60px;z-index:6;min-height:56px;font-size:18px;padding:0 24px;border-radius:28px;box-shadow:0 8px 24px #0006}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
-.big{font:700 clamp(30px,4vw,42px)/1 Inter,sans-serif;font-variant-numeric:tabular-nums}
+.big{font:700 clamp(30px,4vw,42px)/1 Beleren,Inter,sans-serif;font-variant-numeric:tabular-nums}
 .lbl{color:var(--mut);font-size:14px}
 .fact b{display:block;font-size:17px;margin-top:2px}
 section{margin-top:28px}
@@ -62,13 +68,13 @@ input,select{font:16px Inter,sans-serif;min-height:44px;padding:0 12px;border-ra
 .game{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .seat{display:inline-block;margin:2px 10px 2px 0;font-size:14px}.seat.w{font-weight:700;color:var(--acc)}
 .date-h{margin:22px 0 4px;font-weight:700;color:var(--mut)}
-dialog{border:0;border-radius:20px;padding:0;background:var(--panel);color:var(--ink);width:min(640px,96vw);max-height:92vh}
+dialog{margin:3vh auto auto;border:0;border-radius:20px;padding:0;background:var(--panel);color:var(--ink);width:min(640px,96vw);max-height:92vh}
 dialog::backdrop{background:#000a}
 .dlg{padding:20px;display:grid;gap:14px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
 .chip.on{background:var(--acc);color:var(--acc-ink);border-color:transparent}
-.seatrow{display:grid;grid-template-columns:80px 1fr 52px;gap:8px;align-items:center}
+.seatrow{display:grid;grid-template-columns:80px 1fr 52px;gap:8px;align-items:start}.seatrow>b{padding-top:11px}
 .crown{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-size:20px;filter:grayscale(1);opacity:.5}
 .crown.on{filter:none;opacity:1;background:var(--acc)}
 .art{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:var(--panel2)}
@@ -81,6 +87,13 @@ footer.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;min-height:40px;disp
 .ver{font:600 13px Inter,sans-serif;color:var(--mut);background:none;border:0;cursor:pointer;min-height:40px;padding:0 4px;text-decoration:underline dotted;text-underline-offset:3px}
 .ver:hover{color:var(--acc)}.ver:focus-visible{outline:3px solid var(--acc)}
 .log h3{margin:18px 0 6px;font-size:17px}.log ul{margin:0;padding-left:20px}.log li{margin:3px 0}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}.sugg:empty{display:none}
+.sugg button{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font:500 14px Inter,sans-serif;cursor:pointer;text-align:left}
+.sugg button.new{border-style:dashed;color:var(--acc)}
+.seatrow input.ok{border-color:var(--good)}
+.foot-r{display:flex;align-items:center;gap:4px}
+.theme{min-height:40px;min-width:40px;border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer;border-radius:8px}.theme:hover{color:var(--acc)}.theme:focus-visible{outline:3px solid var(--acc)}
+.pnames{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 label.chk{display:flex;gap:10px;align-items:center;min-height:44px}label.chk input{width:22px;min-height:22px}
 .status{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--panel2);color:var(--mut)}
 @media(max-width:600px){table{font-size:13px}.hide-s{display:none}.seatrow{grid-template-columns:64px 1fr 48px}}
@@ -89,21 +102,21 @@ label.chk{display:flex;gap:10px;align-items:center;min-height:44px}label.chk inp
 </head>
 <body>
 <header>
- <div class="top"><h1>EDH Tracker</h1><span class="note" id="savedNote"></span></div>
+ <div class="top"><h1><span class="logo" aria-hidden="true"><i style="background:var(--mW)"></i><i style="background:var(--mU)"></i><i style="background:var(--mB)"></i><i style="background:var(--mR)"></i><i style="background:var(--mG)"></i></span>EDH Tracker<small>Commander del grupo</small></h1><span class="note" id="savedNote"></span></div>
  <nav class="tabs" id="tabs">
-  <a href="#resumen">Resumen</a><a href="#jugadores">Jugadores</a><a href="#mazos">Mazos</a><a href="#partidas">Partidas</a><a href="#colores">Colores</a><a href="#retos">Retos</a><a href="#datos">Datos</a>
+  <a href="#resumen">Resumen</a><a href="#ranking">Ranking</a><a href="#jugadores">Jugadores</a><a href="#mazos">Mazos</a><a href="#partidas">Partidas</a><a href="#colores">Colores</a><a href="#retos">Retos</a><a href="#datos">Datos</a>
  </nav>
 </header>
 <main id="view"></main>
 <button class="btn pri fab" id="addBtn">+ Partida</button>
 <div class="tip" id="tip"></div>
 
-<footer class="bar"><span>Hecho por Toto · powered by Claude</span><button class="ver" id="verBtn" title="Ver historial de versiones">v–</button></footer>
+<footer class="bar"><span>Hecho por Toto</span><span class="foot-r"><button class="theme" id="themeBtn" aria-label="Cambiar a modo oscuro">☾</button><button class="ver" id="verBtn" title="Ver historial de versiones">v–</button></span></footer>
 <dialog id="cdlg"><div class="dlg"><h2>Historial de versiones</h2><div class="log" id="clog"><p class="note">Cargando…</p></div><div class="row" style="margin:0;justify-content:flex-end"><button class="btn" id="cClose">Cerrar</button></div></div></dialog>
 
 <dialog id="dlg"><form class="dlg" id="mform">
  <h2 id="dlgTitle">Nueva partida</h2>
- <div class="row" style="margin:0"><input type="date" id="fDate" required><input type="number" id="fTurns" placeholder="Turnos (opcional)" min="1" max="40" style="width:170px">
+ <div class="row" style="margin:0"><input type="date" id="fDate" required><input type="number" id="fTurns" placeholder="Turnos" min="1" max="40" style="width:110px"><input id="fDur" placeholder="Duración hh:mm" inputmode="numeric" maxlength="5" style="width:150px" title="Opcional. Ej: 1:30, o escribe 130">
  <button type="button" class="btn sm" id="samePod">Misma mesa que la última</button></div>
  <div><div class="lbl">¿Quiénes jugaron?</div><div class="chips" id="fPlayers"></div>
  <div class="row" style="margin:8px 0 0"><input id="newPlayer" placeholder="Jugador nuevo" style="width:180px"><button type="button" class="btn sm" id="addPlayer">Agregar</button></div></div>
@@ -140,7 +153,7 @@ let db={players:[],decks:[],matches:[],ideas:[]};
 
 const note=(t,ms=2500)=>{const n=document.getElementById('savedNote');n.textContent=t;clearTimeout(note.t);if(ms)note.t=setTimeout(()=>n.textContent='',ms)};
 const saveLocal=()=>{if(sb)return;try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}};
-const fromRow=r=>({id:r.id,date:r.played_on,turns:r.turns,winner:r.winner,seats:r.seats,deleted:!!r.deleted_at});
+const fromRow=r=>({id:r.id,date:r.played_on,turns:r.turns,dur:r.duration_min,winner:r.winner,seats:r.seats,deleted:!!r.deleted_at});
 const deckFromRow=r=>({id:r.id,commander:r.commander,owner:r.owner,colors:r.colors||'',ub:r.ub,list:r.list_url||'',retired:r.retired});
 
 async function load(){
@@ -155,7 +168,7 @@ async function load(){
 }
 const store={
  async saveMatch(m){
-  if(sb){const row={played_on:m.date,turns:m.turns||null,winner:m.winner,seats:m.seats};
+  if(sb){const row={played_on:m.date,turns:m.turns||null,duration_min:m.dur||null,winner:m.winner,seats:m.seats};
    const r=m.id?await sb.from('matches').update(row).eq('id',m.id).select().single():await sb.from('matches').insert(row).select().single();
    if(r.error)throw r.error;m=fromRow(r.data)}
   else if(!m.id)m.id=Math.max(0,...db.matches.map(x=>x.id))+1;
@@ -198,6 +211,12 @@ async function scry(commander){
  return{colors:'WUBRG'.split('').filter(x=>ci.has(x)).join('')||'C',ub,found};
 }
 
+const fmtDur=n=>n?`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`:'';
+const fmtDurL=n=>n>=60?`${Math.floor(n/60)} h ${n%60?String(n%60).padStart(2,'0')+' min':''}`.trim():`${n} min`;
+const parseDur=s=>{s=(s||'').trim();if(!s)return 0;let h,m;
+ if(s.includes(':')){[h,m]=s.split(':').map(x=>parseInt(x||'0',10))}else{const d=s.replace(/\D/g,'');if(!d)return NaN;if(d.length<=2){h=0;m=+d}else{h=+d.slice(0,-2);m=+d.slice(-2)}}
+ if(!(h>=0)||!(m>=0)||m>59||h>12)return NaN;return h*60+m};
+
 /* incomplete beta → cuantiles, igual que BETA.INV de la planilla */
 const lgamma=x=>{const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,.1208650973866179e-2,-.5395239384953e-5];let y=x,t=x+5.5;t-=(x+.5)*Math.log(t);let s=1.000000000190015;for(const v of c)s+=v/++y;return-t+Math.log(2.5066282746310005*s/x)};
 const betacf=(a,b,x)=>{let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;d=1/(Math.abs(d)<1e-30?1e-30:d);let h=d;for(let m=1;m<200;m++){let m2=2*m,aa=m*(b-m)*x/((qam+m2)*(a+m2));d=1+aa*d;d=1/(Math.abs(d)<1e-30?1e-30:d);c=1+aa/c;h*=d*c;aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));d=1+aa*d;d=1/(Math.abs(d)<1e-30?1e-30:d);c=1+aa/c;const del=d*c;h*=del;if(Math.abs(del-1)<3e-12)break}return h};
@@ -205,8 +224,8 @@ const ibeta=(x,a,b)=>{if(x<=0)return 0;if(x>=1)return 1;const bt=Math.exp(lgamma
 const betaInv=(p,a,b)=>{let lo=0,hi=1;for(let i=0;i<60;i++){const m=(lo+hi)/2;ibeta(m,a,b)<p?lo=m:hi=m}return(lo+hi)/2};
 
 function stats(){
- const M=active(),P={},D={};const dates=new Set(),turns=[],h2h={};
- M.forEach(m=>{if(m.date)dates.add(m.date);if(m.turns)turns.push(+m.turns);const n=m.seats.length;
+ const M=active(),P={},D={};const dates=new Set(),turns=[],durs=[],h2h={};
+ M.forEach(m=>{if(m.date)dates.add(m.date);if(m.turns)turns.push(+m.turns);if(m.dur)durs.push(+m.dur);const n=m.seats.length;
   m.seats.forEach(s=>{
    const p=P[s.p]??={name:s.p,P:0,W:0,pod:0,colors:{W:0,U:0,B:0,R:0,G:0},streak:0,best:0,borrowed:0};
    const won=m.winner===s.p,dk=deckBy(s.deck);
@@ -222,7 +241,7 @@ function stats(){
  const decks=db.decks.map(dk=>{const s=D[dk.id]||{P:0,W:0,pilots:{},last:null};const elo=s.P?(s.W+5)/(s.P+20)*5000:null;return{...dk,P:s.P,W:s.W,L:s.P-s.W,wr:s.P?s.W/s.P:NaN,elo,div:elo?division(elo):'–',pilots:s.pilots,last:s.last}});
  [...decks].filter(d=>d.elo).sort((a,b)=>b.elo-a.elo).forEach((d,i)=>d.rank=i+1);
  const byDate={};M.forEach(m=>{if(m.date)byDate[m.date]=(byDate[m.date]||0)+1});
- return{M,players,decks,sessions:Object.entries(byDate).sort(),dates,turns,h2h};
+ return{M,players,decks,sessions:Object.entries(byDate).sort(),dates,turns,durs,h2h};
 }
 
 const tip=document.getElementById('tip');
@@ -251,6 +270,7 @@ V.resumen=()=>{
   <div class="card"><div class="lbl">Mazos registrados</div><div class="big">${db.decks.length}</div></div>
   <div class="card"><div class="lbl">Días desde el inicio</div><div class="big">${days}</div></div>
   <div class="card"><div class="lbl">Turnos promedio (${S.turns.length} partidas con dato)</div><div class="big">${avgT}</div></div>
+  <div class="card"><div class="lbl">Duración promedio (${S.durs.length} partidas con dato)</div><div class="big">${S.durs.length?fmtDurL(Math.round(S.durs.reduce((a,b)=>a+b,0)/S.durs.length)):'–'}</div></div>
  </div>
  <section><h3>Sesiones</h3><p class="sub">Partidas por junta, en orden de fecha.</p><div class="fig card" style="min-height:240px"><svg id="sess"></svg></div></section>
  <section><h3>Datos curiosos</h3><div class="grid">
@@ -269,15 +289,17 @@ V.resumen.after=()=>{const S=stats();chart('sess',(s,W,H)=>{const d=S.sessions;i
  if(W>520){let prevY='';d.forEach(([k],i)=>{const y=k.slice(0,4);if(y!==prevY){o+=`<text x="${pad+i*bw}" y="${H-6}" font-size="12" fill="var(--mut)">${y}</text>`;prevY=y}})}
  s.innerHTML=o})};
 
-let pSort='elo',selP=null;
-V.jugadores=()=>{const S=stats();const ps=[...S.players].sort((a,b)=>pSort==='name'?a.name.localeCompare(b.name):b[pSort]-a[pSort]);
+let pSort='elo',selP=null,pendingP=null;
+V.ranking=()=>{const S=stats();const ps=[...S.players].sort((a,b)=>pSort==='name'?a.name.localeCompare(b.name):b[pSort]-a[pSort]);
  const th=(k,t,c='n')=>`<th class="${c}" data-ps="${k}">${t}${pSort===k?' ▾':''}</th>`;
  return`<h2>Ranking de jugadores</h2><p class="sub">El "ELO" es el mismo de tu planilla: winrate suavizado hacia 25% (como si cada jugador partiera con 100 partidas al 25%), ×5000. La barra muestra dónde está realmente tu winrate con 90% de certeza: mientras menos partidas, más ancha.</p>
  <div class="card scroll"><table><thead><tr><th class="n">#</th>${th('name','Jugador','')}${th('elo','ELO')}${th('P','P')}${th('W','W')}${th('wr','WR')}<th class="hide-s" style="width:32%">Rango probable del WR (línea = 25% esperado)</th></tr></thead><tbody>
  ${ps.map(p=>`<tr class="click" data-p="${esc(p.name)}"><td class="n">${p.rank}</td><td><b>${esc(p.name)}</b></td><td class="n">${Math.round(p.elo)} <span class="div ${division(p.elo)}">${division(p.elo)}</span></td><td class="n">${p.P}</td><td class="n">${p.W}</td><td class="n">${pct(p.wr)}</td>
  <td class="hide-s"><svg width="100%" height="18" viewBox="0 0 100 18" preserveAspectRatio="none" data-tip="${esc(p.name)}: entre ${pct(p.lo)} y ${pct(p.hi)}"><line x1="31.25" x2="31.25" y1="0" y2="18" stroke="var(--mut)" stroke-dasharray="2 2" vector-effect="non-scaling-stroke"/><rect x="${p.lo*125}" width="${(p.hi-p.lo)*125}" y="6" height="6" rx="3" fill="var(--acc)" opacity=".35"/><rect x="${p.wr*125-0.8}" width="1.6" y="2" height="14" fill="var(--acc)"/></svg></td></tr>`).join('')}
- </tbody></table><p class="note">Escala de la barra: 0% a 80%.</p></div>
- <section id="pdet">${selP?playerDetail(S,selP):'<p class="sub">Toca un jugador para ver sus mazos, colores y enfrentamientos.</p>'}</section>`};
+ </tbody></table><p class="note">Escala de la barra: 0% a 80%. Toca un jugador para ver su perfil.</p></div>`};
+V.jugadores=()=>{const S=stats();const names=[...db.players].sort((a,b)=>a.localeCompare(b,'es'));
+ return`<h2>Jugadores</h2><div class="pnames">${names.map(n=>`<button class="chip ${n===selP?'on':''}" data-pp="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+ <section id="pdet">${selP?(playerDetail(S,selP)||`<p class="sub">${esc(selP)} todavía no tiene partidas.</p>`):'<p class="sub">Elige un jugador para ver su perfil: mazos, colores y enfrentamientos.</p>'}</section>`};
 function playerDetail(S,name){const p=S.players.find(x=>x.name===name);if(!p)return'';
  const tot=Object.values(p.colors).reduce((a,b)=>a+b,0)||1;
  const own=S.decks.filter(d=>d.owner===name).sort((a,b)=>b.P-a.P);
@@ -316,7 +338,7 @@ let gQ='';
 V.partidas=()=>{const q=gQ.toLowerCase();const all=active();
  const list=all.map((m,i)=>({m,n:i+1})).filter(({m})=>!q||m.seats.some(s=>s.p.toLowerCase().includes(q)||cmd(s.deck).toLowerCase().includes(q))).reverse();
  let cur=null,o='';list.slice(0,200).forEach(({m,n})=>{if(m.date!==cur){cur=m.date;o+=`<div class="date-h">${fmtD(cur)}</div>`}
-  o+=`<div class="game"><span class="note">#${n}</span><div>${m.seats.map(s=>{const dk=deckBy(s.deck);return`<span class="seat ${s.p===m.winner?'w':''}">${s.p===m.winner?'♛ ':''}${esc(s.p)}: ${esc(cmd(s.deck))}${dk&&dk.owner!==s.p?` <span class="own">(de ${esc(dk.owner)})</span>`:''}</span>`}).join('')}${m.turns?`<span class="note"> · ${m.turns} turnos</span>`:''}</div><button class="btn sm" data-edit="${m.id}">Editar</button></div>`});
+  o+=`<div class="game"><span class="note">#${n}</span><div>${m.seats.map(s=>{const dk=deckBy(s.deck);return`<span class="seat ${s.p===m.winner?'w':''}">${s.p===m.winner?'♛ ':''}${esc(s.p)}: ${esc(cmd(s.deck))}${dk&&dk.owner!==s.p?` <span class="own">(de ${esc(dk.owner)})</span>`:''}</span>`}).join('')}${m.turns?`<span class="note"> · ${m.turns} turnos</span>`:''}${m.dur?`<span class="note"> · ${fmtDurL(m.dur)}</span>`:''}</div><button class="btn sm" data-edit="${m.id}">Editar</button></div>`});
  return`<h2>Historial</h2><div class="row"><input id="gQ" placeholder="Filtrar por jugador o mazo" value="${esc(gQ)}"><span class="note">${list.length} partidas${list.length>200?' (mostrando las 200 más recientes)':''}</span></div><div class="card">${o||'<p>Sin partidas.</p>'}</div>`};
 
 V.colores=()=>{const S=stats(),by={};S.decks.forEach(d=>{const c=d.colors||'?';const r=by[c]??={c,n:0,P:0,W:0};r.n++;r.P+=d.P;r.W+=d.W});
@@ -352,13 +374,14 @@ function render(){const h=(location.hash||'#resumen').slice(1),v=V[h]?h:'resumen
  observers.splice(0).forEach(o=>o.disconnect());
  document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));
  document.getElementById('view').innerHTML=V[v]();V[v].after?.()}
-addEventListener('hashchange',()=>{selP=null;selD=null;render()});
+addEventListener('hashchange',()=>{selP=pendingP;pendingP=null;selD=null;render()});
 
 const view=document.getElementById('view');
 view.addEventListener('click',async e=>{const t=e.target;
  const ps=t.closest('[data-ps]');if(ps){pSort=ps.dataset.ps;render();return}
  const ds=t.closest('[data-ds]');if(ds){dSort=ds.dataset.ds;render();return}
- const pr=t.closest('[data-p]');if(pr){selP=pr.dataset.p;render();document.getElementById('pdet').scrollIntoView({behavior:'smooth'});return}
+ const pr=t.closest('[data-p]');if(pr){pendingP=pr.dataset.p;location.hash='#jugadores';return}
+ const pp=t.closest('[data-pp]');if(pp){selP=pp.dataset.pp;render();return}
  const ed=t.closest('[data-editdeck]');if(ed){openDeck(ed.dataset.editdeck);return}
  const dr=t.closest('[data-d]');if(dr){selD=dr.dataset.d;if(location.hash!=='#mazos'){location.hash='#mazos';setTimeout(()=>{selD=dr.dataset.d;render()},0)}else{render();scrollTo({top:0,behavior:'smooth'})}return}
  if(t.id==='closeD'){selD=null;render();return}
@@ -384,43 +407,64 @@ const dlg=document.getElementById('dlg');let editId=null,sel=[],seats={},winner=
 const todayISO=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
 const ownDecks=p=>{const S=stats();return S.decks.filter(d=>d.owner===p&&!d.retired).sort((a,b)=>(b.last||'').localeCompare(a.last||'')||b.P-a.P)};
 function lastOwnDeck(p){const M=active();for(let i=M.length-1;i>=0;i--){const s=M[i].seats.find(x=>x.p===p);if(s&&deckBy(s.deck)?.owner===p)return s.deck}return ownDecks(p)[0]?.id||''}
+const raw=s=>s.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const norm=s=>raw(s).replace(/^the\s+/,'');
+function recentOwn(p,n=4){const out=[],M=active();for(let i=M.length-1;i>=0&&out.length<n;i--){const s=M[i].seats.find(x=>x.p===p);const d=s&&deckBy(s.deck);if(d&&d.owner===p&&!d.retired&&!out.includes(d))out.push(d)}
+ if(out.length<n)ownDecks(p).forEach(d=>{if(out.length<n&&!out.includes(d))out.push(d)});return out}
+function suggest(p){const st=seats[p],q=raw((st.text||'').trim()),own=ownDecks(p);
+ const starts=d=>norm(d.commander).startsWith(q)||raw(d.commander).startsWith(q);
+ let list=q?own.filter(starts).slice(0,8):recentOwn(p);
+ const exact=q&&own.some(d=>raw(d.commander)===q);
+ return list.map(d=>`<button type="button" data-pick="${esc(p)}" data-id="${esc(d.id)}">${esc(d.commander)}</button>`).join('')+(q&&!exact?`<button type="button" class="new" data-pick="${esc(p)}" data-id="__new">＋ Crear "${esc(st.text.trim())}"</button>`:'')}
+function drawSugg(p){const box=dlg.querySelector(`[data-sugg="${CSS.escape(p)}"]`);if(box)box.innerHTML=suggest(p)}
 function drawDlg(){
  const freq=p=>db.matches.filter(m=>m.seats.some(s=>s.p===p)).length;
- document.getElementById('fPlayers').innerHTML=[...db.players].sort((a,b)=>freq(b)-freq(a)).map(p=>`<button type="button" class="chip ${sel.includes(p)?'on':''}" data-chip="${esc(p)}">${esc(p)}</button>`).join('');
- document.getElementById('fSeats').innerHTML=sel.map(p=>{const st=seats[p]||{deck:''},own=ownDecks(p);const extra=st.deck&&st.deck!=='__new'&&!own.some(d=>d.id===st.deck)?deckBy(st.deck):null;
-  return`<div class="seatrow"><b>${esc(p)}</b><div style="display:grid;gap:6px"><select data-seat="${esc(p)}"><option value="">Elegir mazo…</option>${own.map(d=>`<option value="${esc(d.id)}" ${d.id===st.deck?'selected':''}>${esc(d.commander)}</option>`).join('')}${extra?`<option value="${esc(extra.id)}" selected>${esc(extra.commander)} (de ${esc(extra.owner)})</option>`:''}<option value="__new" ${st.deck==='__new'?'selected':''}>＋ Mazo nuevo…</option></select>
-  ${st.deck==='__new'?`<input data-newdeck="${esc(p)}" value="${esc(st.name||'')}" placeholder="Nombre del commander">`:''}</div><button type="button" class="crown ${winner===p?'on':''}" data-win="${esc(p)}" aria-label="Ganó ${esc(p)}">♛</button></div>`}).join('')
-  +(sel.length?'<p class="note" style="margin:0">Toca la corona del que ganó. Solo aparecen los mazos propios de cada jugador.</p>':'');
+ if(!drawDlg.order||drawDlg.order.length!==db.players.length)drawDlg.order=[...db.players].sort((a,b)=>freq(b)-freq(a));
+ document.getElementById('fPlayers').innerHTML=drawDlg.order.map(p=>`<button type="button" class="chip ${sel.includes(p)?'on':''}" data-chip="${esc(p)}">${esc(p)}</button>`).join('');
+ document.getElementById('fSeats').innerHTML=sel.map(p=>{const st=seats[p]||(seats[p]={deck:'',text:''});
+  return`<div class="seatrow"><b>${esc(p)}</b><div style="display:grid;gap:6px"><input data-seat="${esc(p)}" class="${st.deck?'ok':''}" value="${esc(st.text||'')}" placeholder="Escribe el commander…" autocomplete="off" autocapitalize="words"><div class="sugg" data-sugg="${esc(p)}" ${st.deck?'hidden':''}>${st.deck?'':suggest(p)}</div></div><button type="button" class="crown ${winner===p?'on':''}" data-win="${esc(p)}" aria-label="Ganó ${esc(p)}">♛</button></div>`}).join('')
+  +(sel.length?'<p class="note" style="margin:0">Toca la corona del que ganó. Aparecen los últimos 4 mazos de cada uno; escribe las primeras letras para buscar.</p>':'');
 }
 function openDlg(id=null){editId=id;const m=id!=null?db.matches.find(x=>x.id===id):null;
- sel=m?m.seats.map(s=>s.p):[];seats=m?Object.fromEntries(m.seats.map(s=>[s.p,{deck:s.deck}])):{};winner=m?.winner||null;
- document.getElementById('fDate').value=m?.date||todayISO();document.getElementById('fTurns').value=m?.turns||'';
+ sel=m?m.seats.map(s=>s.p):[];seats=m?Object.fromEntries(m.seats.map(s=>[s.p,{deck:s.deck,text:cmd(s.deck)}])):{};winner=m?.winner||null;
+ document.getElementById('fDate').value=m?.date||todayISO();document.getElementById('fTurns').value=m?.turns||'';document.getElementById('fDur').value=fmtDur(m?.dur);
  document.getElementById('dlgTitle').textContent=m?'Editar partida':'Nueva partida';
  const del=document.getElementById('delMatch');del.hidden=!m;del.textContent='Borrar';delete del.dataset.sure;
  document.getElementById('fMsg').textContent='';drawDlg();dlg.showModal()}
 document.getElementById('addBtn').onclick=()=>openDlg();
+document.getElementById('fDur').addEventListener('blur',e=>{const v=parseDur(e.target.value);if(v)e.target.value=fmtDur(v)});
 document.getElementById('cancel').onclick=()=>dlg.close();
-document.getElementById('samePod').onclick=()=>{const M=active(),m=M[M.length-1];if(!m)return;sel=m.seats.map(s=>s.p);seats={};sel.forEach(p=>seats[p]={deck:lastOwnDeck(p)});winner=null;drawDlg()};
+document.getElementById('samePod').onclick=()=>{const M=active(),m=M[M.length-1];if(!m)return;sel=m.seats.map(s=>s.p);seats={};sel.forEach(p=>{const id=lastOwnDeck(p);seats[p]={deck:id,text:id?cmd(id):''}});winner=null;drawDlg()};
 document.getElementById('addPlayer').onclick=async()=>{const n=document.getElementById('newPlayer');const v=n.value.trim();
- if(v&&!db.players.some(p=>p.toLowerCase()===v.toLowerCase())){await safe(()=>store.addPlayer(v));sel.push(v);seats[v]={deck:'__new'}}n.value='';drawDlg()};
-dlg.addEventListener('click',e=>{const c=e.target.closest('[data-chip]');if(c){const p=c.dataset.chip;if(sel.includes(p)){sel=sel.filter(x=>x!==p);if(winner===p)winner=null}else{sel.push(p);seats[p]??={deck:lastOwnDeck(p)||'__new'}}drawDlg();return}
- const w=e.target.closest('[data-win]');if(w){winner=winner===w.dataset.win?null:w.dataset.win;drawDlg()}});
-dlg.addEventListener('change',e=>{const p=e.target.dataset.seat;if(p){seats[p]={deck:e.target.value};drawDlg();if(e.target.value==='__new')dlg.querySelector(`[data-newdeck="${CSS.escape(p)}"]`)?.focus()}});
-dlg.addEventListener('input',e=>{const p=e.target.dataset.newdeck;if(p)seats[p].name=e.target.value});
+ if(v&&!db.players.some(p=>p.toLowerCase()===v.toLowerCase())){await safe(()=>store.addPlayer(v));sel.push(v);seats[v]={deck:'',text:''}}n.value='';drawDlg()};
+dlg.addEventListener('click',e=>{const c=e.target.closest('[data-chip]');if(c){const p=c.dataset.chip;if(sel.includes(p)){sel=sel.filter(x=>x!==p);if(winner===p)winner=null}else{sel.push(p);seats[p]??={deck:'',text:''}}drawDlg();return}
+ const w=e.target.closest('[data-win]');if(w){winner=winner===w.dataset.win?null:w.dataset.win;dlg.querySelectorAll('[data-win]').forEach(x=>x.classList.toggle('on',x.dataset.win===winner));return}
+ const pk=e.target.closest('[data-pick]');if(pk){const p=pk.dataset.pick,st=seats[p];
+  if(pk.dataset.id==='__new'){st.deck='';st.text=st.text.trim()}else{st.deck=pk.dataset.id;st.text=cmd(pk.dataset.id)}
+  const inp=dlg.querySelector(`[data-seat="${CSS.escape(p)}"]`);inp.value=st.text;inp.classList.toggle('ok',!!st.deck);
+  const box=dlg.querySelector(`[data-sugg="${CSS.escape(p)}"]`);box.hidden=true;box.innerHTML='';
+  if(pk.dataset.id==='__new'){inp.classList.add('ok');st.isNew=true}
+  const i=sel.indexOf(p),next=sel.slice(i+1).find(q=>!seats[q].deck&&!seats[q].isNew);if(next)dlg.querySelector(`[data-seat="${CSS.escape(next)}"]`)?.focus();else inp.blur()}});
+dlg.addEventListener('input',e=>{const p=e.target.dataset.seat;if(!p)return;const st=seats[p];st.text=e.target.value;st.isNew=false;
+ const m=ownDecks(p).find(d=>norm(d.commander)===norm(st.text.trim()));st.deck=m?m.id:(st.deck&&cmd(st.deck)===st.text?st.deck:'');
+ e.target.classList.toggle('ok',!!st.deck);const box=dlg.querySelector(`[data-sugg="${CSS.escape(p)}"]`);box.hidden=false;box.innerHTML=suggest(p)});
+dlg.addEventListener('focusin',e=>{const p=e.target.dataset?.seat;if(!p)return;const box=dlg.querySelector(`[data-sugg="${CSS.escape(p)}"]`);if(box.hidden){box.hidden=false;box.innerHTML=suggest(p)}if(seats[p].deck)e.target.select()});
+dlg.addEventListener('pointerdown',e=>{if(e.target.closest('[data-pick]'))e.preventDefault()});
 document.getElementById('delMatch').onclick=async e=>{const b=e.currentTarget;if(!b.dataset.sure){b.dataset.sure=1;b.textContent='¿Seguro? Toca otra vez';return}
  await safe(()=>store.setDeleted(editId,true));dlg.close();note('Partida enviada a la papelera');render()};
 document.getElementById('mform').addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('fMsg');
  if(sel.length<2){msg.textContent='Elige al menos 2 jugadores.';return}
- for(const p of sel){const st=seats[p]||{};if(!st.deck||(st.deck==='__new'&&!(st.name||'').trim())){msg.textContent=`Falta el mazo de ${p}.`;return}}
+ for(const p of sel){const st=seats[p]||{};if(!st.deck&&!(st.text||'').trim()){msg.textContent=`Falta el mazo de ${p}.`;return}}
  if(!winner){msg.textContent='Marca quién ganó con la corona.';return}
+ const dur=parseDur(document.getElementById('fDur').value);if(isNaN(dur)){msg.textContent='La duración va como hh:mm, por ejemplo 1:30.';return}
  const btn=document.getElementById('saveMatch');btn.disabled=true;msg.textContent='Guardando…';
  try{
   const newDecks=[];
   const st=[];for(const p of sel){let id=seats[p].deck;
-   if(id==='__new'){const name=seats[p].name.trim();id=slug(p)+'/'+slug(name);
+   if(!id){const name=seats[p].text.trim();id=slug(p)+'/'+slug(name);
     if(!deckBy(id)){const d={id,commander:name,owner:p,colors:'',ub:false,list:'',retired:false};await store.saveDeck(d);newDecks.push(d)}}
    st.push({p,deck:id})}
-  const m={id:editId||undefined,date:document.getElementById('fDate').value,seats:st,winner};const t=document.getElementById('fTurns').value;if(t)m.turns=+t;
+  const m={id:editId||undefined,date:document.getElementById('fDate').value,seats:st,winner};const t=document.getElementById('fTurns').value;if(t)m.turns=+t;if(dur)m.dur=dur;
   await store.saveMatch(m);dlg.close();note('Partida guardada');render();
   for(const d of newDecks){const r=await scry(d.commander).catch(()=>null);if(r){await safe(()=>store.saveDeck({...d,colors:r.colors,ub:r.ub}));note(`${d.commander}: colores ${r.colors}${r.ub?' · UB':''}`);render()}}
  }catch(err){msg.textContent='No se pudo guardar: '+(err.message||err)}finally{btn.disabled=false}
@@ -448,6 +492,14 @@ document.getElementById('dform').addEventListener('submit',async e=>{e.preventDe
  const d={id:dEdit?.id||slug(owner)+'/'+slug(commander),commander,owner,colors,ub:document.getElementById('dUB').checked,list:document.getElementById('dList').value.trim(),retired:document.getElementById('dRet').checked};
  if(!dEdit&&deckBy(d.id)){document.getElementById('dScryMsg').textContent=`${owner} ya tiene ese mazo.`;return}
  await safe(()=>store.saveDeck(d));ddlg.close();selD=d.id;note('Mazo guardado');render()});
+
+/* ================= tema claro / oscuro ================= */
+const themeBtn=document.getElementById('themeBtn');
+const curTheme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+const paintTheme=()=>{const d=curTheme()==='dark';themeBtn.textContent=d?'☀':'☾';themeBtn.setAttribute('aria-label',d?'Cambiar a modo claro':'Cambiar a modo oscuro')};
+try{const t=localStorage.getItem('edh-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
+paintTheme();
+themeBtn.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem('edh-theme',t)}catch(e){}paintTheme();render()};
 
 /* ================= versión e historial ================= */
 const VER=window.EDH_VERSION||'dev';
