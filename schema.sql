@@ -43,7 +43,9 @@ create table ideas (
 create table matches_history (id bigserial primary key, at timestamptz default now(), op text, row jsonb);
 create table decks_history   (id bigserial primary key, at timestamptz default now(), op text, row jsonb);
 
-create or replace function log_change() returns trigger language plpgsql as $$
+-- security definer: guarda el historial con permisos del dueño (la web no puede leerlo ni escribirlo directo)
+create or replace function log_change() returns trigger
+language plpgsql security definer set search_path = public as $$
 begin
   execute format('insert into %I(op,row) values ($1,$2)', TG_TABLE_NAME || '_history')
     using TG_OP, to_jsonb(OLD);

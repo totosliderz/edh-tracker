@@ -1,5 +1,13 @@
 # Historial de versiones del EDH Tracker
 
+## v1.3 · 25/11/2026
+- se corrige error al borrar o editar partidas (permisos del historial de cambios en la base de datos)
+- en el perfil de cada jugador, sus mazos se abren dentro de la lista sin salir del perfil
+- perfil con última partida (fecha y hace cuánto), último mazo usado y "última vez" de cada mazo
+- todas las tablas se ordenan tocando el título (otra vez para invertir)
+- historial de partidas con cada jugador y su mazo como etiqueta, en dos columnas y dos filas
+- las partidas jugadas antes de las 6 am cuentan para el día anterior
+
 ## v1.2 · 24/11/2026
 - pestaña Jugadores ordenada por cantidad de partidas jugadas
 - en Mazos, el detalle de cada mazo se abre dentro de la lista, justo bajo el mazo, sin volver arriba
